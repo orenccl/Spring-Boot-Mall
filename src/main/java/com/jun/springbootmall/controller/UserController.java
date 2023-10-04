@@ -25,7 +25,7 @@ public class UserController {
 
         User user = userService.getUserById(userId);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().replacePath("/users").build().toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
         return ResponseEntity.created(location).body(user);
     }
 }
