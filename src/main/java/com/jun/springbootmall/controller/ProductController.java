@@ -13,7 +13,6 @@ import java.net.URI;
 
 @RestController
 public class ProductController {
-
     @Autowired
     private ProductService productService;
 
@@ -29,17 +28,12 @@ public class ProductController {
 
         Product product = productService.getProductById(productId);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{productId}")
-                .buildAndExpand(productId)
-                .toUri();
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{productId}").buildAndExpand(productId).toUri();
         return ResponseEntity.created(location).body(product);
     }
 
     @PutMapping("/products/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable Integer productId, @RequestBody @Valid ProductRequest productRequest) {
-
         // Check if product exists
         Product product = productService.getProductById(productId);
         if (product == null) {
@@ -52,5 +46,12 @@ public class ProductController {
         Product updatedProduct = productService.getProductById(productId);
 
         return ResponseEntity.ok(updatedProduct);
+    }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
+        productService.deleteProductById(productId);
+
+        return ResponseEntity.noContent().build();
     }
 }
