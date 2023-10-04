@@ -1,12 +1,15 @@
 package com.jun.springbootmall.controller;
 
+import com.jun.springbootmall.dto.ProductRequest;
 import com.jun.springbootmall.model.Product;
 import com.jun.springbootmall.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 public class ProductController {
@@ -18,5 +21,19 @@ public class ProductController {
     public ResponseEntity<Product> getProduct(@PathVariable Integer productId) {
         Product product = productService.getProductById(productId);
         return product != null ? ResponseEntity.ok(product) : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/products")
+    public ResponseEntity<Product> createProduct(@RequestBody @Valid ProductRequest productRequest) {
+        Integer productId = productService.createProduct(productRequest);
+
+        Product product = productService.getProductById(productId);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{productId}")
+                .buildAndExpand(productId)
+                .toUri();
+        return ResponseEntity.created(location).body(product);
     }
 }
