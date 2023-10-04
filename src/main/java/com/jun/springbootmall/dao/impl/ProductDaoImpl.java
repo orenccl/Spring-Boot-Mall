@@ -40,6 +40,8 @@ public class ProductDaoImpl implements ProductDao {
             map.put("search", "%" + productQueryParams.getSearch() + "%");
         }
 
+        sql += " ORDER BY " + productQueryParams.getOrderBy() + " " + productQueryParams.getSort();
+
         return namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
     }
 
@@ -47,7 +49,7 @@ public class ProductDaoImpl implements ProductDao {
     public Product getProductById(Integer productId) {
         String sql = "SELECT product_id, product_name, category, image_url," +
                 " price, stock, description, created_date, last_modified_date " +
-                "FROM product where product_id = :productId;";
+                "FROM product where product_id = :productId";
 
         Map<String, Object> map = new HashMap<>();
         map.put("productId", productId);
@@ -61,7 +63,7 @@ public class ProductDaoImpl implements ProductDao {
         String sql = "INSERT INTO product (product_name, category, image_url, " +
                 "price, stock, description, created_date, last_modified_date) " +
                 "VALUES (:productName, :category, :imageUrl, :price, :stock, " +
-                ":description, :createdDate, :lastModifiedDate);";
+                ":description, :createdDate, :lastModifiedDate)";
 
         Map<String, Object> map = new HashMap<>();
         map.put("productName", productRequest.getProductName());
@@ -105,7 +107,7 @@ public class ProductDaoImpl implements ProductDao {
 
     @Override
     public void deleteProductById(Integer productId) {
-        String sql = "DELETE FROM product where product_id = :productId;";
+        String sql = "DELETE FROM product where product_id = :productId";
 
         Map<String, Object> map = new HashMap<>();
         map.put("productId", productId);
