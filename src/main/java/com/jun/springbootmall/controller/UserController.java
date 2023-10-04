@@ -1,5 +1,6 @@
 package com.jun.springbootmall.controller;
 
+import com.jun.springbootmall.dto.UserLoginRequest;
 import com.jun.springbootmall.dto.UserRegisterRequest;
 import com.jun.springbootmall.model.Product;
 import com.jun.springbootmall.model.User;
@@ -27,5 +28,11 @@ public class UserController {
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
         return ResponseEntity.created(location).body(user);
+    }
+
+    @PostMapping("/users/login")
+    public ResponseEntity<User> login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
+        User user = userService.login(userLoginRequest);
+        return user != null ? ResponseEntity.ok(user) : ResponseEntity.badRequest().build();
     }
 }
