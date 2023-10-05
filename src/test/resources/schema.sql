@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS user
     last_modified_date TIMESTAMP    NOT NULL
 );
 
--- Order
+-- Order ( OrderDetail、OrderItem )
 CREATE TABLE order_detail
 (
     order_id           INT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
