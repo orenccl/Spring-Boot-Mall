@@ -1,8 +1,10 @@
 package com.jun.springbootmall.dao.impl;
 
 import com.jun.springbootmall.dao.OrderDao;
-import com.jun.springbootmall.dto.CreateOrderRequest;
+import com.jun.springbootmall.model.OrderDetail;
 import com.jun.springbootmall.model.OrderItem;
+import com.jun.springbootmall.rowmapper.OrderDetailRowMapper;
+import com.jun.springbootmall.rowmapper.OrderItemRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -19,6 +21,31 @@ import java.util.Map;
 public class OrderDaoImpl implements OrderDao {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Override
+    public OrderDetail getOrderDetailById(Integer orderId) {
+        String sql = "SELECT order_id, user_id, total_amount, created_date, last_modified_date " +
+                "FROM order_detail where order_id = :orderId";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("orderId", orderId);
+
+        List<OrderDetail> orderDetailList = namedParameterJdbcTemplate.query(sql, map, new OrderDetailRowMapper());
+        return orderDetailList.isEmpty() ? null : orderDetailList.get(0);
+    }
+
+    @Override
+    public List<OrderItem> getOrderItemsByOrderId(Integer orderId) {
+        String sql = "SELECT oi.order_item_id, oi.order_id, oi.product_id, oi.quantity, oi.amount, p.product_name, p.image_url " +
+                "FROM order_item as oi " +
+                "LEFT JOIN product as p ON oi.product_id = p.product_id " +
+                "WHERE oi.order_id = :orderId";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("orderId", orderId);
+
+        return namedParameterJdbcTemplate.query(sql, map, new OrderItemRowMapper());
+    }
 
     @Override
     public Integer createOrderDetail(Integer userId, Integer totalAmount) {
